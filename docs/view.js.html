@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>JSDoc: Source: view.js</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+	<link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-page-title="Source: view.js">
+
+	<div id="main">
+		
+		<h1 class="page-title">Source: view.js</h1>
+		
+		
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**	Provides a Class and mixin that implement simple HTML views using Zepto and Handlebars.  
+ *	If called directly as a function, &lt;code>view()&lt;/code> is an alias of {@link view.mixin}.
+ *	@module view
+ *
+ *	@example
+ *		&lt;caption>Basic Usage:&lt;/caption>
+ *
+ *		var view = require('view');
+ *		
+ *		// Uses Handlebars templates:
+ *		var template = '&lt;h1>{{{title}}}&lt;/h1> &lt;button id="hi">Click Me&lt;/button>';
+ *		
+ *		// Instantiate a view:
+ *		var page = view( template );
+ *		
+ *		// Wire up some events:
+ *		page.hookEvents({
+ *			'click button#hi' : function() {
+ *				alert( 'Title: ' + page.base.find('h1').text() );
+ *			}
+ *		});
+ *		
+ *		// Insert the view into the DOM:
+ *		page.insertInto( document.body );
+ *
+ *	@example
+ *		&lt;caption>Integrated Example:&lt;/caption>
+ *
+ *		define([
+ *			'util', 'view', 
+ *			'text!templates/index.html'		// just an HTML file
+ *		], function(util, view, template) {
+ *			var page = {
+ *				url : '/',
+ *				
+ *				events : {
+ *					'click #submit' : function() {
+ *						page.view.base.find('form').submit();
+ *					}
+ *				},
+ *				
+ *				load : function(params, router) {
+ *					if (!this.view) {
+ *						// initialize a view:
+ *						this.view = view(template);
+ *						
+ *						// wire up event handlers:
+ *						this.view.hookEvents(this.events);
+ *					}
+ *					
+ *					// Template some data into the view:
+ *					this.view.template({
+ *						title : 'Test Title',
+ *						params : params
+ *					});
+ *					
+ *					// insert view into DOM:
+ *					this.view.insertInto('#main');
+ *				},
+ *				
+ *				unload : function() {
+ *					// remove view from DOM:
+ *					this.view.base.remove();
+ *				}
+ *			};
+ *			return page;
+ *		});
+ */
+(function(factory) {
+	if (typeof window.define==='function' &amp;&amp; window.define.amd) {
+		window.define(['util', 'events', 'zepto', 'handlebars'], factory);
+	}
+	else {
+		factory(window.util, window.EventEmitter, $, handlebars);
+	}
+}(function(_, events, $, handlebars) {
+	var EventEmitter = events.EventEmitter || events;
+	_ = _ || $;
+	
+	/**	A URL router.
+	 *	@class module:view.View
+	 *	@augments module:events.EventEmitter
+	 */
+	function View(tpl, name) {
+		if (!(this instanceof View)) return new View(tpl, name);
+		
+		this.rawView = tpl;
+		this.doTemplate = handlebars.compile(this.rawView);
+		this.readyView = $(tpl);
+		this.base = $(document.createElement('div'));
+		this.base.html('').append(this.readyView);
+		this.name = name;
+		if (this.name) {
+			this.base.attr('data-view', (name));
+		}
+	}
+	
+	_.inherits(View, EventEmitter);
+	
+	_.extend(View.prototype, /** @lends module:view.View# */ {
+
+		/** Render the view using the given data.
+		 *	@param {Object} data	Template fields to inject.
+		 */
+		template : function(data) {
+			if (this.doTemplate) {
+				this.templateData = data;
+				this.readyView = $(data &amp;&amp; this.doTemplate(data) || this.rawView);
+				this.base.html('').append(this.readyView);
+				return this;
+			}
+			return false;
+		},
+
+		/** Register a hash of selector-delegated event handler functions.
+		 *	@param {Object} handlers	Handlers to register. Keys are of the form `event-type some#css.selector`.
+		 *	@example
+		 *		view.hookEvents({
+		 *			"click input[type=submit]" : function() {
+		 *				$(this).parent('form').submit();
+		 *				return false;
+		 *			}
+		 *		});
+		 */
+		hookEvents : function(events) {
+			var sep, evt, selector, c, x;
+			if (this.readyView) {
+				this.events = events;
+				for (x in events) {
+					if (events.hasOwnProperty(x)) {
+						sep = x.split(' ');
+						evt = sep[0];
+						selector = sep.slice(1).join(' ');
+						this.base.on(evt, selector, events[x]);
+					}
+				}
+				return this;
+			}
+			return false;
+		},
+		
+		/**	Insert the view into a given parent node.
+		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
+		 */
+		insertInto : function(selector) {
+			if (this.base) {
+				$(selector).append(this.base);
+			}
+			return this;
+		},
+		
+		/**	Insert the view immediately after a given sibling node.
+		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
+		 */
+		insertAfter : function(selector) {
+			if (this.base) {
+				this.base.insertAfter($(selector));
+			}
+			return this;
+		}
+	});
+	
+	/**	If the module is called as a function, returns a new {@link view.View} instance.
+	 *	@name view.view
+	 *	@function view.view
+	 */
+	View.View = View.view = View;
+	
+	return View;
+}));
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+	</div>
+	
+	<a class="menuLink">Menu</a>
+	
+	<nav>
+		<h2><a href="index.html">frameworkless-views</a></h2><h3>Modules</h3><ul><li title="module:view"><a href="module-view.html">view</a></li></ul><h3>Classes</h3><ul><li title="module:view.View"><a href="module-view.View.html">View</a></li></ul>
+	</nav>
+
+	<footer>
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed May 21 2014 18:26:16 GMT-0400 (EDT)
+	</footer>
+
+	<script src="scripts/prettify/prettify.js"></script>
+	<script src="scripts/prettify/lang-css.js"></script>
+	<script src="scripts/enhancements.js"> </script>
+</body>
+</html>
