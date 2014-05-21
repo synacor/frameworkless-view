@@ -1,0 +1,28 @@
+<div class="view">
+	<h2>{{title}}</h2>
+	<h4>Iterating over an object:</h4>
+	<ul>
+		{{#each list}}
+			<li>{{.}}</li>
+		{{/each}}
+	</ul>
+	<h4>Iterating over an array:</h4>
+	<ol>
+		{{#arr}}
+			<li>{{.}}</li>
+		{{/arr}}
+	</ol>
+	<h4>Recursive nesting:</h4>
+	<ul>
+		{{#each nest1}}
+			<li>
+				<div>key={{__key__}}</div>
+				<ol>
+					{{#.}}
+						<li>{{.}}</li>
+					{{/.}}
+				</ol>
+			</li>
+		{{/each}}
+	</ul>
+</div>
