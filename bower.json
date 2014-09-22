@@ -1,0 +1,23 @@
+{
+  "name": "frameworkless-views",
+  "version": "0.0.1",
+  "authors": [
+    "Synacor"
+  ],
+  "description": "A view class to be used in frameworkless",
+  "main": "dist/views.js",
+  "keywords": [
+    "view"
+  ],
+  "license": "Proprietary",
+  "ignore": [
+    "**/.*",
+    "demo",
+    "docs",
+    "jsdoc-template",
+    "src",
+    "Gruntfile.js",
+    "package.json",
+    "demo-server.js"
+  ]
+}
