@@ -18,6 +18,7 @@
     "src",
     "Gruntfile.js",
     "package.json",
-    "demo-server.js"
+    "demo-server.js",
+    "jsdoc.json"
   ]
 }
