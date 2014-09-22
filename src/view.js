@@ -67,8 +67,8 @@
  *		});
  */
 (function(factory) {
-	if (typeof window.define==='function' && window.define.amd) {
-		window.define(['util', 'events', 'zepto', 'handlebars'], factory);
+	if (typeof define==='function' && define.amd) {
+		define(['util', 'events', 'zepto', 'handlebars'], factory);
 	}
 	else {
 		factory(window.util, window.EventEmitter, $, handlebars);
