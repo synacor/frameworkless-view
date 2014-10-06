@@ -210,12 +210,14 @@
 		},
 		
 		/**	Insert the view into a given parent node.
-		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
+		 *	@param {String|Element} parent		A DOM element, or a CSS selector representing one.
 		 */
-		insertInto : function(selector) {
+		insertInto : function(parent) {
 			if (this.base) {
-				var node = document.querySelector(selector);
-				node.appendChild(this.base);
+				if(typeof parent === 'string'){
+					parent = document.querySelector(parent);
+				}
+				parent.appendChild(this.base);
 			}
 			return this;
 		},
