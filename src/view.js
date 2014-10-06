@@ -80,16 +80,7 @@
 
 
 	/*Event delegation implementation*/
-	Element.prototype.matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || fallback;
-
-	var fallback = function(sel) {
-		var els = document.querySelectorAll(sel),
-			i;
-		for(i = els.length; i--;)
-			if(els[i] === this) return true;
-
-		return false;
-	};
+	var matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector
 
 	var proto = Element.prototype;
 	proto.matches = proto.matches ||
@@ -129,14 +120,13 @@
 			});
 
 		parent = event.target || event.srcElement;
-		
 		do {
 			for (x = smallList.length; x--;) {
-				var res;
+				var matchesSelector;
 				current = smallList[x];
 				if (parent.matches(current.selector)){
-					res = current.callback.call(parent, event);
-					if (res === false) return false;
+					matchesSelector = matches.call(parent, current.selector);
+					if (matchesSelector === false) return false;
 				}
 			}
 			parent = parent.parentNode;
