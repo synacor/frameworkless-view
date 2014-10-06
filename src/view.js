@@ -157,7 +157,7 @@
 
 		this.base = document.createElement('div');
 		this.base.setAttribute('id', name + '-base');
-		this.base.classList.add('view-base');
+		this.base.className = 'view-base';
 		this.base.innerHTML = '';
 
 		this.name = name;
