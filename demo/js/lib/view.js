@@ -75,7 +75,75 @@
 	}
 }(function(_, events, $, handlebars) {
 	var EventEmitter = events.EventEmitter || events;
+	
 	_ = _ || $;
+
+
+	/*Event delegation implementation*/
+	Element.prototype.matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || fallback;
+
+	var fallback = function(sel) {
+		var els = document.querySelectorAll(sel),
+			i;
+		for(i = els.length; i--;)
+			if(els[i] === this) return true;
+
+		return false;
+	};
+
+	var proto = Element.prototype;
+	proto.matches = proto.matches ||
+					proto.webkitMatchesSelector ||
+					proto.mozMatchesSelector ||
+					proto.oMatchesSelector || 
+					function(sel) {
+						var els = document.querySelectorAll(sel);
+						for (var i=els.length; i--; )
+							if (els[i]===this)
+								return true;
+						return false;
+					};
+
+	function delegateFrom(node, type, selector, callback) {
+		if (!node) return false;
+		if (!node._eventRegistry) node._eventRegistry = [];
+		if (!node._eventTypes) node._eventTypes = {};
+		if (!node._eventTypes.hasOwnProperty(type)){
+			node.addEventListener(type, handleDelegate);
+			node._eventTypes[type] = true;
+		}
+
+		node._eventRegistry.push({
+			type: type,
+			selector: selector,
+			callback: callback
+		});
+	}
+	
+	function handleDelegate(event) {
+		var x, current, parent,
+			self = this,
+			smallList = this._eventRegistry.filter(function(eventObj){
+				if (eventObj.type === event.type) return true;
+				return false;
+			});
+
+		parent = event.target || event.srcElement;
+		
+		do {
+			for (x = smallList.length; x--;) {
+				var res;
+				current = smallList[x];
+				if (parent.matches(current.selector)){
+					res = current.callback.call(parent, event);
+					if (res === false) return false;
+				}
+			}
+			parent = parent.parentNode;
+		}while (parent !== this);
+
+		
+	}
 	
 	/**	A URL router.
 	 *	@class module:view.View
@@ -83,30 +151,32 @@
 	 */
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
-		
+
 		this.rawView = tpl;
 		this.doTemplate = handlebars.compile(this.rawView);
-		this.readyView = $(tpl);
-		this.base = $(document.createElement('div'));
-		this.base.html('').append(this.readyView);
+
+		this.base = document.createElement('div');
+		this.base.setAttribute('id', name + '-base');
+		this.base.classList.add('view-base');
+		this.base.innerHTML = '';
+
 		this.name = name;
 		if (this.name) {
-			this.base.attr('data-view', (name));
+			this.base.setAttribute('data-view', name);
 		}
 	}
-	
+
 	_.inherits(View, EventEmitter);
 	
 	_.extend(View.prototype, /** @lends module:view.View# */ {
-
 		/** Render the view using the given data.
 		 *	@param {Object} data	Template fields to inject.
 		 */
 		template : function(data) {
 			if (this.doTemplate) {
 				this.templateData = data;
-				this.readyView = $(data && this.doTemplate(data) || this.rawView);
-				this.base.html('').append(this.readyView);
+				this.base.innerHTML = (data && this.doTemplate(data)) || this.rawView;
+				
 				return this;
 			}
 			return false;
@@ -124,14 +194,14 @@
 		 */
 		hookEvents : function(events) {
 			var sep, evt, selector, c, x;
-			if (this.readyView) {
+			if (this.base){
 				this.events = events;
 				for (x in events) {
 					if (events.hasOwnProperty(x)) {
 						sep = x.split(' ');
 						evt = sep[0];
 						selector = sep.slice(1).join(' ');
-						this.base.on(evt, selector, events[x]);
+						delegateFrom(this.base, evt, selector, events[x]);
 					}
 				}
 				return this;
@@ -144,7 +214,8 @@
 		 */
 		insertInto : function(selector) {
 			if (this.base) {
-				$(selector).append(this.base);
+				var node = document.querySelector(selector);
+				node.appendChild(this.base);
 			}
 			return this;
 		},
@@ -153,8 +224,11 @@
 		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
 		 */
 		insertAfter : function(selector) {
+
 			if (this.base) {
-				this.base.insertAfter($(selector));
+				var sel = document.querySelector(selector);
+				this.base.insertBefore(sel, this.base.nextSibling);
+				//this.base.insertAfter($(selector));
 			}
 			return this;
 		}

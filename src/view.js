@@ -74,9 +74,8 @@
 		factory(window.util, window.EventEmitter, $, handlebars);
 	}
 }(function(_, events, $, handlebars) {
-	var EventEmitter = events.EventEmitter || events,
-		eventRegistry = [],
-		eventTypes = {};
+	var EventEmitter = events.EventEmitter || events;
+	
 	_ = _ || $;
 
 
@@ -90,7 +89,7 @@
 			if(els[i] === this) return true;
 
 		return false;
-	}
+	};
 
 	var proto = Element.prototype;
 	proto.matches = proto.matches ||
@@ -120,19 +119,7 @@
 			callback: callback
 		});
 	}
-
-	function nodeFromText(text) {
-		if (!text) return false;
-
-		var temp = document.createElement('div');
-		temp.innerHTML = text;
-
-		var elsArray = [].slice.call(temp.children);
-		temp = null;
-
-		return elsArray;
-	}
-
+	
 	function handleDelegate(event) {
 		var x, current, parent,
 			self = this,
@@ -142,9 +129,7 @@
 			});
 
 		parent = event.target || event.srcElement;
-		console.log(parent);
-		console.log(smallList);
-		console.log("you clicked", this);
+		
 		do {
 			for (x = smallList.length; x--;) {
 				var res;
@@ -155,7 +140,7 @@
 				}
 			}
 			parent = parent.parentNode;
-		}while (parent !== this)
+		}while (parent !== this);
 
 		
 	}
@@ -169,14 +154,11 @@
 
 		this.rawView = tpl;
 		this.doTemplate = handlebars.compile(this.rawView);
-		this.readyView = nodeFromText(this.rawView);
 
 		this.base = document.createElement('div');
-		this.base.setAttribute('id', 'base');
+		this.base.setAttribute('id', name + '-base');
+		this.base.classList.add('view-base');
 		this.base.innerHTML = '';
-		
-		for(var i = 0; i < this.readyView.length; i++)
-		 	this.base.appendChild(this.readyView[i]);
 
 		this.name = name;
 		if (this.name) {
@@ -193,25 +175,8 @@
 		template : function(data) {
 			if (this.doTemplate) {
 				this.templateData = data;
-				this.readyView = (data && this.doTemplate(data)) || this.rawView;
-
-				if(this.readyView === this.rawView) {
-					this.readyView.nodeFromText(this.readyView);
-				} else { 
-					this.readyView = this.doTemplate(data);
-				}
-
-
-				this.base.innerHTML = '';
-				if(typeof(this.readyView) === 'object'){
-					for(var i = 0; i < this.readyView.length; i++)
-						this.base.appendChild(this.readyView[i]);
-				}
-				else {
-					this.base.innerHTML = (this.readyView);
-				}
-
-				//this.base.html('').append(this.readyView);
+				this.base.innerHTML = (data && this.doTemplate(data)) || this.rawView;
+				
 				return this;
 			}
 			return false;
@@ -229,7 +194,7 @@
 		 */
 		hookEvents : function(events) {
 			var sep, evt, selector, c, x;
-			if (this.readyView) {
+			if (this.base){
 				this.events = events;
 				for (x in events) {
 					if (events.hasOwnProperty(x)) {
@@ -262,7 +227,7 @@
 
 			if (this.base) {
 				var sel = document.querySelector(selector);
-				this.base.parentNode.insertBefore(sel, this.base.nextSibling);
+				this.base.insertBefore(sel, this.base.nextSibling);
 				//this.base.insertAfter($(selector));
 			}
 			return this;
