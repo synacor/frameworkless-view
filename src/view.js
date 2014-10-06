@@ -225,12 +225,12 @@
 		/**	Insert the view immediately after a given sibling node.
 		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
 		 */
-		insertAfter : function(selector) {
-
+		insertAfter : function(sibling) {
 			if (this.base) {
-				var sel = document.querySelector(selector);
-				this.base.insertBefore(sel, this.base.nextSibling);
-				//this.base.insertAfter($(selector));
+				if(typeof sibling === 'string'){
+					sibling = document.querySelector(sibling);
+				}
+				sibling.parentNode.insertBefore(this.base, sibling.nextSibling);
 			}
 			return this;
 		}
