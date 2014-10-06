@@ -153,7 +153,7 @@
 		if (!(this instanceof View)) return new View(tpl, name);
 
 		this.rawView = tpl;
-		this.doTemplate = handlebars.compile(this.rawView);
+		this.renderTemplate = handlebars.compile(this.rawView);
 
 		this.base = document.createElement('div');
 		this.base.setAttribute('id', name + '-base');
@@ -173,9 +173,9 @@
 		 *	@param {Object} data	Template fields to inject.
 		 */
 		template : function(data) {
-			if (this.doTemplate) {
+			if (this.renderTemplate) {
 				this.templateData = data;
-				this.base.innerHTML = (data && this.doTemplate(data)) || this.rawView;
+				this.base.innerHTML = (data && this.renderTemplate(data)) || this.rawView;
 				
 				return this;
 			}
