@@ -146,7 +146,7 @@
 	/**	The View class.
 	 *	@constructor
 	 *	@param {string} tpl - Template to inject
-	 *	@param {string} name - (Optional) Name of template
+	 *	@param {string} name - Name of template
 	 */
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
@@ -154,7 +154,9 @@
 		this.renderTemplate = handlebars.compile(this.rawView);
 
 		this.base = document.createElement('div');
-		this.base.setAttribute('id', name + '-base');
+		if(name) {
+			this.base.setAttribute('id', name + '-base');
+		}
 		this.base.className = 'view-base';
 		this.base.innerHTML = this.rawView;
 
@@ -209,8 +211,8 @@
 					parent = document.querySelector(parent);
 				}				
 				parent.appendChild(this.base);
-			}else {
-				console.log("No I will not insert this.");
+			} else {
+				throw new Error('Cannot insert view prior to initialization');
 			}
 
 			return this;
