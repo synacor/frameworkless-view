@@ -82,17 +82,17 @@
 	* Matches selector to passed-in DOM node (see handleDelegate)
 	*/
 	var proto = Element.prototype,
-		matches = proto.matches = proto.matches ||
-						proto.webkitMatchesSelector ||
-						proto.mozMatchesSelector ||
-						proto.oMatchesSelector || 
-						function(sel) {
-							var els = document.querySelectorAll(sel);
-							for (var i=els.length; i--; )
-								if (els[i]===this)
-									return true;
-							return false;
-						};
+		matches = proto.matches ||
+					proto.webkitMatchesSelector ||
+					proto.mozMatchesSelector ||
+					proto.oMatchesSelector ||
+					function(sel) {
+						var els = document.querySelectorAll(sel);
+						for (var i=els.length; i--; )
+							if (els[i]===this)
+								return true;
+						return false;
+					};
 
 	/** Event delegation implementation: Initial set-up for hooking event
 	*	@param {Element} node - The root DOM node for delegating the event to
@@ -101,7 +101,7 @@
 	*	@param {string} callback - Callback function of events object
 	*/
 	function delegateFrom(node, type, selector, callback) {
-		if (!node) return false;
+		if (!node || !type || !selector || !callback) return false;
 		if (!node._eventRegistry) node._eventRegistry = [];
 		if (!node._eventTypes) node._eventTypes = {};
 		if (!node._eventTypes.hasOwnProperty(type)){
@@ -128,17 +128,18 @@
 			});
 
 		parent = event.target || event.srcElement;
-		do {
+		
+		while (parent !== this) {
 			for (x = smallList.length; x--;) {
 				var res;
 				current = smallList[x];
-				if (parent.matches(current.selector)) {
-				    res = current.callback.call(parent, event);
-				    if (res === false) return false;
+				if (matches.call(parent, current.selector)) {
+					res = current.callback.call(parent, event);
+					if (res === false) return false;
 				}
 			}
 			parent = parent.parentNode;
-		}while (parent !== this);
+		}
 
 		
 	}

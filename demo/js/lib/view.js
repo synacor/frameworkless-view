@@ -75,27 +75,17 @@
 	}
 }(function(_, events, $, handlebars) {
 	var EventEmitter = events.EventEmitter || events;
-	
 	_ = _ || $;
 
 
-	/*Event delegation implementation*/
-	Element.prototype.matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || fallback;
-
-	var fallback = function(sel) {
-		var els = document.querySelectorAll(sel),
-			i;
-		for(i = els.length; i--;)
-			if(els[i] === this) return true;
-
-		return false;
-	};
-
-	var proto = Element.prototype;
-	proto.matches = proto.matches ||
+	/**
+	* Matches selector to passed-in DOM node (see handleDelegate)
+	*/
+	var proto = Element.prototype,
+		matches = proto.matches ||
 					proto.webkitMatchesSelector ||
 					proto.mozMatchesSelector ||
-					proto.oMatchesSelector || 
+					proto.oMatchesSelector ||
 					function(sel) {
 						var els = document.querySelectorAll(sel);
 						for (var i=els.length; i--; )
@@ -104,8 +94,14 @@
 						return false;
 					};
 
+	/** Event delegation implementation: Initial set-up for hooking event
+	*	@param {Element} node - The root DOM node for delegating the event to
+	*	@param {string} type - Type of event
+	*	@param {string} selector - CSS Selector for DOM node
+	*	@param {string} callback - Callback function of events object
+	*/
 	function delegateFrom(node, type, selector, callback) {
-		if (!node) return false;
+		if (!node || !type || !selector || !callback) return false;
 		if (!node._eventRegistry) node._eventRegistry = [];
 		if (!node._eventTypes) node._eventTypes = {};
 		if (!node._eventTypes.hasOwnProperty(type)){
@@ -120,6 +116,9 @@
 		});
 	}
 	
+	/** Event delegation implementation: Delegation handler
+	*	@param {Object} event - Event to delegate
+	*/
 	function handleDelegate(event) {
 		var x, current, parent,
 			self = this,
@@ -130,35 +129,37 @@
 
 		parent = event.target || event.srcElement;
 		
-		do {
+		while (parent !== this) {
 			for (x = smallList.length; x--;) {
 				var res;
 				current = smallList[x];
-				if (parent.matches(current.selector)){
+				if (matches.call(parent, current.selector)) {
 					res = current.callback.call(parent, event);
 					if (res === false) return false;
 				}
 			}
 			parent = parent.parentNode;
-		}while (parent !== this);
+		}
 
 		
 	}
 	
-	/**	A URL router.
-	 *	@class module:view.View
-	 *	@augments module:events.EventEmitter
+	/**	The View class.
+	 *	@constructor
+	 *	@param {string} tpl - Template to inject
+	 *	@param {string} name - Name of template
 	 */
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
-
 		this.rawView = tpl;
-		this.doTemplate = handlebars.compile(this.rawView);
+		this.renderTemplate = handlebars.compile(this.rawView);
 
 		this.base = document.createElement('div');
-		this.base.setAttribute('id', name + '-base');
-		this.base.classList.add('view-base');
-		this.base.innerHTML = '';
+		if(name) {
+			this.base.setAttribute('id', name + '-base');
+		}
+		this.base.className = 'view-base';
+		this.base.innerHTML = this.rawView;
 
 		this.name = name;
 		if (this.name) {
@@ -170,12 +171,12 @@
 	
 	_.extend(View.prototype, /** @lends module:view.View# */ {
 		/** Render the view using the given data.
-		 *	@param {Object} data	Template fields to inject.
+		 *	@param {Object} data - Template fields to inject.
 		 */
 		template : function(data) {
-			if (this.doTemplate) {
+			if (this.renderTemplate) {
 				this.templateData = data;
-				this.base.innerHTML = (data && this.doTemplate(data)) || this.rawView;
+				this.base.innerHTML = (data && this.renderTemplate(data)) || this.rawView;
 				
 				return this;
 			}
@@ -183,14 +184,7 @@
 		},
 
 		/** Register a hash of selector-delegated event handler functions.
-		 *	@param {Object} handlers	Handlers to register. Keys are of the form `event-type some#css.selector`.
-		 *	@example
-		 *		view.hookEvents({
-		 *			"click input[type=submit]" : function() {
-		 *				$(this).parent('form').submit();
-		 *				return false;
-		 *			}
-		 *		});
+		 *	@param {Object} events - Events to register. Keys are of the form `event-type some#css.selector`.
 		 */
 		hookEvents : function(events) {
 			var sep, evt, selector, c, x;
@@ -210,25 +204,30 @@
 		},
 		
 		/**	Insert the view into a given parent node.
-		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
+		 *	@param {String|Element} parent - A DOM element, or a CSS selector representing one.
 		 */
-		insertInto : function(selector) {
+		insertInto : function(parent) {
 			if (this.base) {
-				var node = document.querySelector(selector);
-				node.appendChild(this.base);
+				if(typeof parent === 'string'){
+					parent = document.querySelector(parent);
+				}				
+				parent.appendChild(this.base);
+			} else {
+				throw new Error('Cannot insert view prior to initialization');
 			}
+
 			return this;
 		},
 		
 		/**	Insert the view immediately after a given sibling node.
-		 *	@param {String|Element} selector		A DOM element, or a CSS selector representing one.
+		 *	@param {String|Element} selector - A DOM element, or a CSS selector representing one.
 		 */
-		insertAfter : function(selector) {
-
+		insertAfter : function(sibling) {
 			if (this.base) {
-				var sel = document.querySelector(selector);
-				this.base.insertBefore(sel, this.base.nextSibling);
-				//this.base.insertAfter($(selector));
+				if(typeof sibling === 'string'){
+					sibling = document.querySelector(sibling);
+				}
+				sibling.parentNode.insertBefore(this.base, sibling.nextSibling);
 			}
 			return this;
 		}
