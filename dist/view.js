@@ -114,6 +114,7 @@
 			selector: selector,
 			callback: callback
 		});
+		return true;
 	}
 	
 	/** Event delegation implementation: Delegation handler
@@ -129,18 +130,14 @@
 
 		parent = event.target || event.srcElement;
 		
-		while (parent !== this) {
-			for (x = smallList.length; x--;) {
-				var res;
+		do {
+			for (x=smallList.length; x--; ) {
 				current = smallList[x];
-				if (matches.call(parent, current.selector)) {
-					res = current.callback.call(parent, event);
-					if (res === false) return false;
+				if (matches.call(parent, current.selector) && current.callback.call(parent, event)===false) {
+					return false;
 				}
 			}
-			parent = parent.parentNode;
-		}
-
+		} while( (parent=parent.parentNode)!==this.parentNode );
 		
 	}
 	
@@ -195,7 +192,9 @@
 						sep = x.split(' ');
 						evt = sep[0];
 						selector = sep.slice(1).join(' ');
-						delegateFrom(this.base, evt, selector, events[x]);
+						if (!delegateFrom(this.base, evt, selector, events[x])){
+							throw new Error('Invalid events object.');
+						}
 					}
 				}
 				return this;
