@@ -71,14 +71,12 @@
 		define(['util', 'events', 'handlebars'], factory);
 	}
 	else {
-		factory(window.util, window.EventEmitter, $, handlebars);
+		factory(window.util, window.EventEmitter, handlebars);
 	}
 }(function(_, events, handlebars) {
 	var EventEmitter = events.EventEmitter || events,
 		proto = (window.Element || document.createElement('div').constructor).prototype,
 		matches;
-
-	_ = _ || $;
 
 
 	/** Matches selector to passed-in DOM node (see handleDelegate)
