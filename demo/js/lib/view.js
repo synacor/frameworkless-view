@@ -68,12 +68,12 @@
  */
 (function(factory) {
 	if (typeof define==='function' && define.amd) {
-		define(['util', 'events', 'zepto', 'handlebars'], factory);
+		define(['util', 'events', 'handlebars'], factory);
 	}
 	else {
 		factory(window.util, window.EventEmitter, $, handlebars);
 	}
-}(function(_, events, $, handlebars) {
+}(function(_, events, handlebars) {
 	var EventEmitter = events.EventEmitter || events;
 	_ = _ || $;
 
@@ -229,6 +229,32 @@
 				sibling.parentNode.insertBefore(this.base, sibling.nextSibling);
 			}
 			return this;
+		},
+		
+		/** Get an Array of nodes contained in the view that match the given selector.
+		 *  @param {string} selector
+		 *  @returns {array} matchedNodes
+		 */
+		find : function(selector) {
+			return Array.prototype.slice.call(this.base.querySelectorAll(selector));
+		},
+		
+		/** Return the first node contained in the view that matches the given selector.
+		 *  @param {string} selector
+		 *  @returns {Element} node
+		 */
+		findOne : function(selector) {
+			return this.base.querySelector(selector);
+		},
+		
+		/** Convenient alias of {@link View#find view.find()} */
+		$ : function(selector) {
+			return this.find(selector);
+		},
+		
+		/** Convenient alias of {@link View#findOne view.findOne()} */
+		$$ : function(selector) {
+			return this.findOne(selector);
 		}
 	});
 	
