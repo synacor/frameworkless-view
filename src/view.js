@@ -107,9 +107,12 @@
 	*/
 	function delegateFrom(node, type, selector, callback) {
 		if (!node || !type || !selector || !callback) return false;
+		
 		if (!node._eventRegistry) node._eventRegistry = [];
+		
 		if (!node._eventTypes) node._eventTypes = {};
-		if (!node._eventTypes.hasOwnProperty(type)){
+		
+		if (!node._eventTypes.hasOwnProperty(type)) {
 			node.addEventListener(type, handleDelegate);
 			node._eventTypes[type] = true;
 		}
@@ -126,24 +129,26 @@
 	*	@param {Object} event - Event to delegate
 	*/
 	function handleDelegate(event) {
-		var x, current, parent,
-			self = this,
-			smallList = this._eventRegistry.filter(function(eventObj){
-				if (eventObj.type === event.type) return true;
-				return false;
-			});
+		var self = this,
+			reg = this._eventRegistry,
+			parent = event.target || event.srcElement,
+			handlers = [],
+			handler, i;
 
-		parent = event.target || event.srcElement;
+		for (i=reg.length; i--; ) {
+			if (reg[i].type===event.type) {
+				handlers.push(reg[i]);
+			}
+		}
 		
 		do {
-			for (x=smallList.length; x--; ) {
-				current = smallList[x];
-				if (matches.call(parent, current.selector) && current.callback.call(parent, event)===false) {
+			for (i=handlers.length; i--; ) {
+				handler = handlers[i];
+				if (matches.call(parent, handler.selector) && handler.callback.call(parent, event)===false) {
 					return false;
 				}
 			}
 		} while( (parent=parent.parentNode)!==this.parentNode );
-		
 	}
 	
 	/**	The View class.
@@ -153,6 +158,7 @@
 	 */
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
+
 		this.rawView = tpl;
 		this.renderTemplate = handlebars.compile(this.rawView);
 
@@ -172,17 +178,15 @@
 	_.inherits(View, EventEmitter);
 	
 	_.extend(View.prototype, /** @lends module:view.View# */ {
+		
 		/** Render the view using the given data.
 		 *	@param {Object} data - Template fields to inject.
 		 */
 		template : function(data) {
-			if (this.renderTemplate) {
-				this.templateData = data;
-				this.base.innerHTML = (data && this.renderTemplate(data)) || this.rawView;
-				
-				return this;
-			}
-			return false;
+			if (!this.renderTemplate) return false;
+			this.templateData = data;
+			this.base.innerHTML = (data && this.renderTemplate(data)) || this.rawView;
+			return this;
 		},
 
 		/** Register a hash of selector-delegated event handler functions.
@@ -190,36 +194,32 @@
 		 */
 		hookEvents : function(events) {
 			var sep, evt, selector, c, x;
-			if (this.base){
-				this.events = events;
-				for (x in events) {
-					if (events.hasOwnProperty(x)) {
-						sep = x.split(' ');
-						evt = sep[0];
-						selector = sep.slice(1).join(' ');
-						if (!delegateFrom(this.base, evt, selector, events[x])){
-							throw new Error('Invalid events object.');
-						}
+			if (!this.base) return false;
+			this.events = events;
+			for (x in events) {
+				if (events.hasOwnProperty(x)) {
+					sep = x.split(' ');
+					evt = sep[0];
+					selector = sep.slice(1).join(' ');
+					if (!delegateFrom(this.base, evt, selector, events[x])) {
+						throw new Error('Invalid event entry "'+x+'".');
 					}
 				}
-				return this;
 			}
-			return false;
+			return this;
 		},
 		
 		/**	Insert the view into a given parent node.
 		 *	@param {String|Element} parent - A DOM element, or a CSS selector representing one.
 		 */
 		insertInto : function(parent) {
-			if (this.base) {
-				if(typeof parent === 'string'){
-					parent = document.querySelector(parent);
-				}				
-				parent.appendChild(this.base);
-			} else {
+			if (!this.base) {
 				throw new Error('Cannot insert view prior to initialization');
 			}
-
+			if(typeof parent==='string') {
+				parent = document.querySelector(parent);
+			}
+			parent.appendChild(this.base);
 			return this;
 		},
 		
@@ -228,7 +228,7 @@
 		 */
 		insertAfter : function(sibling) {
 			if (this.base) {
-				if(typeof sibling === 'string'){
+				if(typeof sibling==='string') {
 					sibling = document.querySelector(sibling);
 				}
 				sibling.parentNode.insertBefore(this.base, sibling.nextSibling);
@@ -261,6 +261,7 @@
 		$$ : function(selector) {
 			return this.findOne(selector);
 		}
+		
 	});
 	
 	/**	If the module is called as a function, returns a new {@link view.View} instance.
