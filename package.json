@@ -1,6 +1,6 @@
 {
   "name": "frameworkless-views",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "View management for Frameworkless.",
   "main": "demo-server.js",
   "scripts": {
