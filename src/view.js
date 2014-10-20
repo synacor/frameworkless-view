@@ -74,31 +74,36 @@
 		factory(window.util, window.EventEmitter, $, handlebars);
 	}
 }(function(_, events, handlebars) {
-	var EventEmitter = events.EventEmitter || events;
+	var EventEmitter = events.EventEmitter || events,
+		proto = (window.Element || document.createElement('div').constructor).prototype,
+		matches;
+
 	_ = _ || $;
 
 
-	/**
-	* Matches selector to passed-in DOM node (see handleDelegate)
-	*/
-	var proto = Element.prototype,
-		matches = proto.matches ||
-					proto.webkitMatchesSelector ||
-					proto.mozMatchesSelector ||
-					proto.oMatchesSelector ||
-					function(sel) {
-						var els = document.querySelectorAll(sel);
-						for (var i=els.length; i--; )
-							if (els[i]===this)
-								return true;
-						return false;
-					};
+	/** Matches selector to passed-in DOM node (see handleDelegate)
+	 *	@function
+	 *	@ignore
+	 */
+	matches = proto.matches ||
+		proto.webkitMatchesSelector ||
+		proto.mozMatchesSelector ||
+		proto.oMatchesSelector ||
+		function(sel) {
+			var els = document.querySelectorAll(sel);
+			for (var i=els.length; i--; )
+				if (els[i]===this)
+					return true;
+			return false;
+		};
 
 	/** Event delegation implementation: Initial set-up for hooking event
 	*	@param {Element} node - The root DOM node for delegating the event to
 	*	@param {string} type - Type of event
 	*	@param {string} selector - CSS Selector for DOM node
 	*	@param {string} callback - Callback function of events object
+	*	@private
+	*	@returns {boolean} handlerWasAdded
 	*/
 	function delegateFrom(node, type, selector, callback) {
 		if (!node || !type || !selector || !callback) return false;
