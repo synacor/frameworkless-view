@@ -8,7 +8,7 @@ app.use(compress());
 
 // rewrite
 app.use(function(req, res, next) {
-	if (!req.url.match(/(^\/?(static|docs|tests)\/|\.[a-z]+$)(\?.*)?/g)) {
+	if (!req.url.match(/(^\/?(static|demo|docs|dist|tests)\/|\.[a-z]+$)(\?.*)?/g)) {
 		req.url = '/';
 	}
 	next();
