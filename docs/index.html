@@ -3,22 +3,28 @@
 <head>
 	<meta charset="utf-8">
 	<title>JSDoc: Index</title>
-	
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	
+
 	<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
 	<link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<link type="text/css" rel="stylesheet" href="styles/gh-fork-ribbon.css">
 </head>
 
 <body data-page-title="Index">
+	<div class="github-fork-ribbon-wrapper right">
+		<div class="github-fork-ribbon">
+			<a href="https://github.com/synacorinc/frameworkless-view">Fork me on GitHub</a>
+		</div>
+	</div>
 
 	<div id="main">
-		
+
 		<h1 class="page-title">Index</h1>
-		
+
 		
 
 
@@ -41,7 +47,34 @@
 
 
     <section class="index markdown">
-        <article><h1>Frameworkless Views</h1><p>Adds support for simple HTML views using Zepto and Handlebars.</p>
+        <article><h1>Frameworkless View <a href="https://www.npmjs.org/package/frameworkless-view"><img src="http://img.shields.io/npm/v/frameworkless-view.svg?style=flat" alt="NPM Version"></a> <a href="http://bower.io/search/?q=frameworkless-view"><img src="http://img.shields.io/bower/v/frameworkless-view.svg?style=flat" alt="Bower Version"></a></h1><p>Adds support for simple HTML views using Zepto and Handlebars.</p>
+<p><a href="https://travis-ci.org/synacorinc/frameworkless-view"><img src="https://img.shields.io/travis/synacorinc/frameworkless-view.svg?style=flat&amp;branch=master" alt="Build Status"></a>
+<a href="https://david-dm.org/synacorinc/frameworkless-view"><img src="http://img.shields.io/david/synacorinc/frameworkless-view.svg?style=flat" alt="Dependency Status"></a>
+<a href="https://david-dm.org/synacorinc/frameworkless-view#info=devDependencies"><img src="http://img.shields.io/david/dev/synacorinc/frameworkless-view.svg?style=flat" alt="devDependency Status"></a></p>
+<h2>Use a Package Manager</h2><p><strong>bower:</strong></p>
+<pre class="prettyprint source lang-bash"><code>bower install frameworkless-view
+# copy the stuff you want
+cp bower_components/frameworkless-view/dist/view.js src/lib</code></pre><p><strong>npm:</strong></p>
+<pre class="prettyprint source lang-bash"><code>npm install frameworkless-view
+# copy the stuff you want
+cp node_modules/frameworkless-view/dist/view.js src/lib</code></pre><hr>
+<h2>Use the Source</h2><p>Get started right away, so you can disassemble and play around at your lesure.</p>
+<pre class="prettyprint source lang-bash"><code># Clone frameworkless-view
+git clone git@github.com:synacorinc/frameworkless-view.git
+
+# Install development dependencies
+npm install
+
+# Build the library
+npm run-script build      # or just `grunt` if you have grunt-cli installed globally
+
+# Check out the demo
+PORT=8080 npm start       # this just does `node server.js`</code></pre><hr>
+<h2>Quick Repo Tour</h2><ul>
+<li><code>/src</code> is where the source code lives</li>
+<li><code>/dist</code> is the built library</li>
+<li><code>/demo</code> is a simple demo, using <a href="http://requirejs.org">requirejs</a></li>
+</ul>
 <hr>
 <h2>Usage</h2><pre class="prettyprint source lang-JavaScript"><code>require(['view'], function(view) {
 
@@ -54,7 +87,7 @@
     // Wire up some events:
     page.hookEvents({
         'click button#hi' : function() {
-            alert( 'Title: ' + page.base.find('h1').text() );
+            alert( 'Title: ' + page.$$('h1').textContent );
         }
     });
 
@@ -63,16 +96,23 @@
 
 });</code></pre><hr>
 <h2>Integrated Example</h2><pre class="prettyprint source lang-JavaScript"><code>define([
-    'util', 'view', 
+    'view',
     'text!templates/index.html'        // just an HTML file
-], function(util, view, template) {
+], function(view, template) {
     var page = {
-        url : '/',
-
         events : {
-            'click #submit' : function() {
-                page.view.base.find('form').submit();
-            }
+            'click #submit' : 'submit',
+            'mouseover .tip' : 'showTip'
+        },
+
+        submit : function() {
+            this.view.$$('form').subimt();
+        },
+
+        showTip : function(e) {
+            var tip = this.view.$$('#tip');
+            tip.textContent = e.currentTarget.getAttribute('title');
+            tip.style.display = '';
         },
 
         load : function(params, router) {
@@ -81,7 +121,7 @@
                 this.view = view(template);
 
                 // wire up event handlers:
-                this.view.hookEvents(this.events);
+                this.view.hookEvents(this.events, this);
             }
 
             // Template some data into the view:
@@ -91,15 +131,36 @@
             });
 
             // insert view into DOM:
-            this.view.insertInto('#main');
+            this.view.insertInto(document.body);
         },
 
         unload : function() {
             // remove view from DOM:
-            this.view.base.remove();
+            this.view.remove();
         }
     };
     return page;
+});</code></pre><hr>
+<h2>Concise Example</h2><pre class="prettyprint source lang-JavaScript"><code>var view = require('view');
+
+var list = view({
+    template : '&lt;ul> {{#items}}&lt;li>{{.}}&lt;/li>{{/items}} &lt;/ul>',
+
+    events : {
+        'click li' : 'clickItem'
+    },
+
+    clickItem : function(e) {
+        this.view.e.currentTarget.getAttribute('title')
+    }
+};
+
+// insert into a parent node:
+list.insertInto(document.body);
+
+// template some data:
+list.render({
+    items : [ 'Peach', 'Mango', 'Orange' ]
 });</code></pre></article>
     </section>
 
@@ -109,15 +170,15 @@
 
 
 	</div>
-	
+
 	<a class="menuLink">Menu</a>
-	
+
 	<nav>
-		<h2><a href="index.html">frameworkless-views</a></h2><h3>Modules</h3><ul><li title="module:view"><a href="module-view.html">view</a></li></ul>
+		<h2><a href="index.html">Overview</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:view"><a href="module-view.html">view</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.view"><a href="module-view.html#view">view</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:view.View"><a href="module-view.View.html">View</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.View#$"><a href="module-view.View.html#$">$</a></li><li title="module:view.View#$$"><a href="module-view.View.html#$$">$$</a></li><li title="module:view.View#find"><a href="module-view.View.html#find">find</a></li><li title="module:view.View#findOne"><a href="module-view.View.html#findOne">findOne</a></li><li title="module:view.View#hookEvents"><a href="module-view.View.html#hookEvents">hookEvents</a></li><li title="module:view.View#insertAfter"><a href="module-view.View.html#insertAfter">insertAfter</a></li><li title="module:view.View#insertInto"><a href="module-view.View.html#insertInto">insertInto</a></li><li title="module:view.View#render"><a href="module-view.View.html#render">render</a></li><li title="module:view.View#template"><a href="module-view.View.html#template">template</a></li></ul></div></ul>
 	</nav>
 
 	<footer>
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Mon Oct 20 2014 15:29:07 GMT-0400 (EDT)
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue Jan 06 2015 15:35:39 GMT-0500 (EST)
 	</footer>
 
 	<script src="scripts/prettify/prettify.js"></script>
