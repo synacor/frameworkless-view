@@ -1,24 +1,28 @@
 {
-  "name": "frameworkless-views",
-  "version": "0.2.0",
+  "name": "frameworkless-view",
+  "version": "0.5.0",
   "authors": [
     "Synacor"
   ],
-  "description": "A view class to be used in frameworkless",
-  "main": "dist/views.js",
+  "description": "A View-Presenter implementation for Frameworkless.",
+  "main": "dist/view.js",
   "keywords": [
-    "view"
+    "frameworkless",
+    "view",
+    "mvc"
   ],
   "license": "Proprietary",
   "ignore": [
     "**/.*",
+    "**/*.min.js",
     "demo",
     "docs",
     "jsdoc-template",
     "src",
     "Gruntfile.js",
     "package.json",
-    "demo-server.js",
-    "jsdoc.json"
+    "server.js",
+    "jsdoc.json",
+    "README.md"
   ]
 }
