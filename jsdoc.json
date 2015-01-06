@@ -1,8 +1,8 @@
 {
 	"opts" : {
 		"template" : "./jsdoc-template",
-		"indexName" : "frameworkless-views",
-		"mainpagetitle" : "Frameworkless Views"
+		"indexName" : "Overview",
+		"mainpagetitle" : "Frameworkless View"
 	},
 	"plugins" : [
 		"plugins/markdown"
