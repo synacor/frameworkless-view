@@ -1,10 +1,27 @@
 Frameworkless View [![NPM Version](http://img.shields.io/npm/v/frameworkless-view.svg?style=flat)](https://www.npmjs.org/package/frameworkless-view) [![Bower Version](http://img.shields.io/bower/v/frameworkless-view.svg?style=flat)](http://bower.io/search/?q=frameworkless-view)
 =============
-Adds support for simple HTML views using Zepto and Handlebars.
+
+A simple view-presenter module for [frameworkless](http://github.com/synacorinc/frameworkless).
+
+**[View Demo](http://frameworkless-view.paasive.apla.dev.opal.synacor.com/demo/)**
 
 [![Build Status](https://img.shields.io/travis/synacorinc/frameworkless-view.svg?style=flat&branch=master)](https://travis-ci.org/synacorinc/frameworkless-view)
 [![Dependency Status](http://img.shields.io/david/synacorinc/frameworkless-view.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless-view)
 [![devDependency Status](http://img.shields.io/david/dev/synacorinc/frameworkless-view.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless-view#info=devDependencies)
+
+
+Features
+--------
+
+- Built-in declarative event delegation
+- Uses Handlebars to render HTML view templates
+
+
+---
+
+
+Installation
+============
 
 
 Use a Package Manager
@@ -24,9 +41,6 @@ npm install frameworkless-view
 # copy the stuff you want
 cp node_modules/frameworkless-view/dist/view.js src/lib
 ```
-
-
----
 
 
 Use the Source
@@ -52,19 +66,8 @@ PORT=8080 npm start       # this just does `node server.js`
 ---
 
 
-Quick Repo Tour
----------------
-
-* `/src` is where the source code lives
-* `/dist` is the built library
-* `/demo` is a simple demo, using [requirejs](http://requirejs.org)
-
-
----
-
-
-Usage
------
+Basic Usage
+-----------
 
 ```JavaScript
 require(['view'], function(view) {
@@ -89,7 +92,33 @@ require(['view'], function(view) {
 ```
 
 
----
+Concise Example
+---------------
+
+```JavaScript
+var view = require('view');
+
+var list = view({
+	template : '<ul> {{#items}}<li>{{.}}</li>{{/items}} </ul>',
+
+	events : {
+		'click li' : 'clickItem'
+	},
+
+	// a delegated event handler
+	clickItem : function(e) {
+		console.log(e.delegationTarget.getAttribute('title'));
+	}
+};
+
+// insert into a parent node:
+list.insertInto(document.body);
+
+// template some data:
+list.render({
+	items : [ 'Peach', 'Mango', 'Orange' ]
+});
+```
 
 
 Integrated Example
@@ -148,29 +177,9 @@ define([
 ---
 
 
-Concise Example
+Quick Repo Tour
 ---------------
 
-```JavaScript
-var view = require('view');
-
-var list = view({
-	template : '<ul> {{#items}}<li>{{.}}</li>{{/items}} </ul>',
-
-	events : {
-		'click li' : 'clickItem'
-	},
-
-	clickItem : function(e) {
-		console.log(e.delegationTarget.getAttribute('title'));
-	}
-};
-
-// insert into a parent node:
-list.insertInto(document.body);
-
-// template some data:
-list.render({
-	items : [ 'Peach', 'Mango', 'Orange' ]
-});
-```
+* `/src` is where the source code lives
+* `/dist` is the built library
+* `/demo` is a simple demo, using [requirejs](http://requirejs.org)
