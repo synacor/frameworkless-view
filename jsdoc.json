@@ -1,8 +1,10 @@
 {
 	"opts" : {
+		"pagetitle" : "Frameworkless View",
+		"github" : "synacorinc/frameworkless-view",
 		"template" : "./jsdoc-template",
 		"indexName" : "Overview",
-		"mainpagetitle" : "Frameworkless View"
+		"mainpagetitle" : "Overview"
 	},
 	"plugins" : [
 		"plugins/markdown"
