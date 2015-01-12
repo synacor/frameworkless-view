@@ -3,7 +3,7 @@ Frameworkless View [![NPM Version](http://img.shields.io/npm/v/frameworkless-vie
 
 A simple view-presenter module for [frameworkless](http://github.com/synacorinc/frameworkless).
 
-**[View Demo](http://frameworkless-view.paasive.apla.dev.opal.synacor.com/demo/)**
+**[View Demo](http://frameworkless-view.herokuapp.com/demo/)**
 
 [![Build Status](https://img.shields.io/travis/synacorinc/frameworkless-view.svg?style=flat&branch=master)](https://travis-ci.org/synacorinc/frameworkless-view)
 [![Dependency Status](http://img.shields.io/david/synacorinc/frameworkless-view.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless-view)
@@ -183,3 +183,13 @@ Quick Repo Tour
 * `/src` is where the source code lives
 * `/dist` is the built library
 * `/demo` is a simple demo, using [requirejs](http://requirejs.org)
+
+
+
+---
+
+
+License
+-------
+
+BSD
