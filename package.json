@@ -1,6 +1,6 @@
 {
   "name": "frameworkless-view",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A View-Presenter implementation for Frameworkless.",
   "main": "dist/view.js",
   "scripts": {
@@ -9,23 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://stash.corp.synacor.com/scm/apla/frameworkless-view.git"
+    "url": "https://github.com/synacorinc/frameworkless-view"
   },
   "authors": [
     "James Simpson <jsimpson@synacor.com>",
     "Jason Miller <jasonmiller@synacor.com>"
   ],
-  "license": "Closed-Source",
-  "dependencies": {
-    "compression": "^1.3.0",
-    "serve-static": "^1.8.0"
-  },
+  "license": "BSD",
   "readmeFilename": "README.md",
   "directories": {
     "doc": "docs"
   },
+  "dependencies": {},
   "devDependencies": {
     "express": "~4.10.7",
+    "compression": "^1.3.0",
+    "serve-static": "^1.8.0",
     "grunt": "^0.4.5",
     "grunt-contrib-copy": "~0.7.0",
     "grunt-contrib-jshint": "~0.10.0",

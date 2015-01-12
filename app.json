@@ -1,0 +1,9 @@
+{
+	"name": "frameworkless-view",
+	"description": "A View-Presenter implementation for Frameworkless.",
+	"repository": "https://github.com/synacorinc/frameworkless-view",
+	"keywords": ["frameworkless", "view", "mvc"],
+	"env": {
+		"NPM_CONFIG_PRODUCTION": "false"
+	}
+}

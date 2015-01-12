@@ -1,6 +1,6 @@
 {
   "name": "frameworkless-view",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "authors": [
     "Synacor"
   ],
@@ -11,7 +11,7 @@
     "view",
     "mvc"
   ],
-  "license": "Proprietary",
+  "license": "BSD",
   "ignore": [
     "**/.*",
     "**/*.min.js",
