@@ -252,7 +252,7 @@
 					selector = sep.slice(1).join(' ');
 					fn = events[x];
 					if (ctx && typeof fn==='string') {
-						fn = ctx[fn].bind(fn);
+						fn = ctx[fn].bind(ctx);
 					}
 					if (!delegateFrom(this.base, evt, selector, fn)) {
 						throw new Error('Invalid event entry "'+x+'".');
