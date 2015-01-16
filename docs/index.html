@@ -47,18 +47,25 @@
 
 
     <section class="index markdown">
-        <article><h1>Frameworkless View <a href="https://www.npmjs.org/package/frameworkless-view"><img src="http://img.shields.io/npm/v/frameworkless-view.svg?style=flat" alt="NPM Version"></a> <a href="http://bower.io/search/?q=frameworkless-view"><img src="http://img.shields.io/bower/v/frameworkless-view.svg?style=flat" alt="Bower Version"></a></h1><p>Adds support for simple HTML views using Zepto and Handlebars.</p>
+        <article><h1>Frameworkless View <a href="https://www.npmjs.org/package/frameworkless-view"><img src="http://img.shields.io/npm/v/frameworkless-view.svg?style=flat" alt="NPM Version"></a> <a href="http://bower.io/search/?q=frameworkless-view"><img src="http://img.shields.io/bower/v/frameworkless-view.svg?style=flat" alt="Bower Version"></a></h1><p>A simple view-presenter module for <a href="http://github.com/synacorinc/frameworkless">frameworkless</a>.</p>
+<p><strong><a href="http://frameworkless-view.herokuapp.com/demo/">View Demo</a></strong></p>
 <p><a href="https://travis-ci.org/synacorinc/frameworkless-view"><img src="https://img.shields.io/travis/synacorinc/frameworkless-view.svg?style=flat&amp;branch=master" alt="Build Status"></a>
 <a href="https://david-dm.org/synacorinc/frameworkless-view"><img src="http://img.shields.io/david/synacorinc/frameworkless-view.svg?style=flat" alt="Dependency Status"></a>
 <a href="https://david-dm.org/synacorinc/frameworkless-view#info=devDependencies"><img src="http://img.shields.io/david/dev/synacorinc/frameworkless-view.svg?style=flat" alt="devDependency Status"></a></p>
-<h2>Use a Package Manager</h2><p><strong>bower:</strong></p>
+<p><a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png" alt="Deploy"></a></p>
+<hr>
+<h2>Features</h2><ul>
+<li>Built-in declarative event delegation</li>
+<li>Uses Handlebars to render HTML view templates</li>
+</ul>
+<hr>
+<h1>Installation</h1><h2>Use a Package Manager</h2><p><strong>bower:</strong></p>
 <pre class="prettyprint source lang-bash"><code>bower install frameworkless-view
 # copy the stuff you want
 cp bower_components/frameworkless-view/dist/view.js src/lib</code></pre><p><strong>npm:</strong></p>
 <pre class="prettyprint source lang-bash"><code>npm install frameworkless-view
 # copy the stuff you want
-cp node_modules/frameworkless-view/dist/view.js src/lib</code></pre><hr>
-<h2>Use the Source</h2><p>Get started right away, so you can disassemble and play around at your lesure.</p>
+cp node_modules/frameworkless-view/dist/view.js src/lib</code></pre><h2>Use the Source</h2><p>Get started right away, so you can disassemble and play around at your lesure.</p>
 <pre class="prettyprint source lang-bash"><code># Clone frameworkless-view
 git clone git@github.com:synacorinc/frameworkless-view.git
 
@@ -70,13 +77,7 @@ npm run-script build      # or just `grunt` if you have grunt-cli installed glob
 
 # Check out the demo
 PORT=8080 npm start       # this just does `node server.js`</code></pre><hr>
-<h2>Quick Repo Tour</h2><ul>
-<li><code>/src</code> is where the source code lives</li>
-<li><code>/dist</code> is the built library</li>
-<li><code>/demo</code> is a simple demo, using <a href="http://requirejs.org">requirejs</a></li>
-</ul>
-<hr>
-<h2>Usage</h2><pre class="prettyprint source lang-JavaScript"><code>require(['view'], function(view) {
+<h2>Basic Usage</h2><pre class="prettyprint source lang-JavaScript"><code>require(['view'], function(view) {
 
     // We're using Handlebars templates:
     var template = '&lt;h1>{{{title}}}&lt;/h1> &lt;button id=&quot;hi&quot;>Click Me&lt;/button>';
@@ -94,8 +95,28 @@ PORT=8080 npm start       # this just does `node server.js`</code></pre><hr>
     // Insert the view into the DOM:
     page.insertInto( document.body );
 
-});</code></pre><hr>
-<h2>Integrated Example</h2><pre class="prettyprint source lang-JavaScript"><code>define([
+});</code></pre><h2>Concise Example</h2><pre class="prettyprint source lang-JavaScript"><code>var view = require('view');
+
+var list = view({
+    template : '&lt;ul> {{#items}}&lt;li>{{.}}&lt;/li>{{/items}} &lt;/ul>',
+
+    events : {
+        'click li' : 'clickItem'
+    },
+
+    // a delegated event handler
+    clickItem : function(e) {
+        console.log(e.delegationTarget.getAttribute('title'));
+    }
+};
+
+// insert into a parent node:
+list.insertInto(document.body);
+
+// template some data:
+list.render({
+    items : [ 'Peach', 'Mango', 'Orange' ]
+});</code></pre><h2>Integrated Example</h2><pre class="prettyprint source lang-JavaScript"><code>define([
     'view',
     'text!templates/index.html'        // just an HTML file
 ], function(view, template) {
@@ -141,27 +162,13 @@ PORT=8080 npm start       # this just does `node server.js`</code></pre><hr>
     };
     return page;
 });</code></pre><hr>
-<h2>Concise Example</h2><pre class="prettyprint source lang-JavaScript"><code>var view = require('view');
-
-var list = view({
-    template : '&lt;ul> {{#items}}&lt;li>{{.}}&lt;/li>{{/items}} &lt;/ul>',
-
-    events : {
-        'click li' : 'clickItem'
-    },
-
-    clickItem : function(e) {
-        console.log(e.delegationTarget.getAttribute('title'));
-    }
-};
-
-// insert into a parent node:
-list.insertInto(document.body);
-
-// template some data:
-list.render({
-    items : [ 'Peach', 'Mango', 'Orange' ]
-});</code></pre></article>
+<h2>Quick Repo Tour</h2><ul>
+<li><code>/src</code> is where the source code lives</li>
+<li><code>/dist</code> is the built library</li>
+<li><code>/demo</code> is a simple demo, using <a href="http://requirejs.org">requirejs</a></li>
+</ul>
+<hr>
+<h2>License</h2><p>BSD</p></article>
     </section>
 
 
@@ -178,7 +185,7 @@ list.render({
 	</nav>
 
 	<footer>
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Jan 07 2015 14:03:34 GMT-0500 (EST)
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Jan 16 2015 17:28:05 GMT-0500 (EST)
 	</footer>
 
 	<script src="scripts/prettify/prettify.js"></script>

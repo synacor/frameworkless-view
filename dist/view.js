@@ -193,6 +193,8 @@
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
 
+		this.base = document.createElement('div');
+
 		if (typeof tpl==='object') {
 			_.extend(this, tpl);
 			if (tpl.events) {
@@ -205,7 +207,6 @@
 		this.rawView = tpl;
 		this.renderTemplate = handlebars.compile(this.rawView);
 
-		this.base = document.createElement('div');
 		if (name) {
 			this.base.setAttribute('id', name + '-base');
 		}
