@@ -1,6 +1,6 @@
 {
   "name": "frameworkless-view",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "A View-Presenter implementation for Frameworkless.",
   "main": "dist/view.js",
   "scripts": {
