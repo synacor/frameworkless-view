@@ -198,7 +198,7 @@
 		if (typeof tpl==='object') {
 			_.extend(this, tpl);
 			if (tpl.events) {
-				this.hookEvents(tpl.events, tpl);
+				this.hookEvents(this.events, this);
 			}
 			name = tpl.name;
 			tpl = tpl.template || tpl.tpl;
