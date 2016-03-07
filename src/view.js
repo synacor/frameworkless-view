@@ -193,6 +193,8 @@
 	function View(tpl, name) {
 		if (!(this instanceof View)) return new View(tpl, name);
 
+		EventEmitter.call(this);
+
 		this.base = document.createElement('div');
 
 		if (typeof tpl==='object') {
