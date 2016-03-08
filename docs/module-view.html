@@ -88,100 +88,100 @@
             
         <p class="code-caption">Basic Usage:</p>
     
-    <pre class="prettyprint"><code>var view = require('view');
+    <pre class="prettyprint"><code>		var view = require('view');
 
-// Uses Handlebars templates:
-var template = '&lt;h1>{{{title}}}&lt;/h1> &lt;button id="hi">Click Me&lt;/button>';
+		// Uses Handlebars templates:
+		var template = '&lt;h1>{{{title}}}&lt;/h1> &lt;button id="hi">Click Me&lt;/button>';
 
-// Instantiate a view:
-var page = view( template );
+		// Instantiate a view:
+		var page = view( template );
 
-// Wire up some events:
-page.hookEvents({
-	'click button#hi' : function() {
-		alert( 'Title: ' + page.$$('h1').textContent );
-	}
-});
+		// Wire up some events:
+		page.hookEvents({
+			'click button#hi' : function() {
+				alert( 'Title: ' + page.$$('h1').textContent );
+			}
+		});
 
-// Insert the view into the DOM:
-page.insertInto( document.body );
+		// Insert the view into the DOM:
+		page.insertInto( document.body );
 
 	</code></pre>
 
         <p class="code-caption">Integrated Example:</p>
     
-    <pre class="prettyprint"><code>define([
-	'view',
-	'text!templates/index.html'		// just an HTML file
-], function(view, template) {
-	var page = {
-		events : {
-			'click #submit' : 'submit',
-			'mouseover .tip' : 'showTip'
-		},
+    <pre class="prettyprint"><code>		define([
+			'view',
+			'text!templates/index.html'		// just an HTML file
+		], function(view, template) {
+			var page = {
+				events : {
+					'click #submit' : 'submit',
+					'mouseover .tip' : 'showTip'
+				},
 
-		submit : function() {
-			this.view.$$('form').subimt();
-		},
+				submit : function() {
+					this.view.$$('form').subimt();
+				},
 
-		showTip : function(e) {
-			var tip = this.view.$$('#tip');
-			tip.textContent = e.delegationTarget.getAttribute('title');
-			tip.style.display = '';
-		},
+				showTip : function(e) {
+					var tip = this.view.$$('#tip');
+					tip.textContent = e.delegationTarget.getAttribute('title');
+					tip.style.display = '';
+				},
 
-		load : function(params, router) {
-			if (!this.view) {
-				// initialize a view:
-				this.view = view(template);
+				load : function(params, router) {
+					if (!this.view) {
+						// initialize a view:
+						this.view = view(template);
 
-				// wire up event handlers:
-				this.view.hookEvents(this.events, this);
-			}
+						// wire up event handlers:
+						this.view.hookEvents(this.events, this);
+					}
 
-			// Template some data into the view:
-			this.view.template({
-				title : 'Test Title',
-				params : params
-			});
+					// Template some data into the view:
+					this.view.template({
+						title : 'Test Title',
+						params : params
+					});
 
-			// insert view into DOM:
-			this.view.insertInto(document.body);
-		},
+					// insert view into DOM:
+					this.view.insertInto(document.body);
+				},
 
-		unload : function() {
-			// remove view from DOM:
-			this.view.remove();
-		}
-	};
-	return page;
-});
+				unload : function() {
+					// remove view from DOM:
+					this.view.remove();
+				}
+			};
+			return page;
+		});
 
 	</code></pre>
 
         <p class="code-caption">Concise Example:</p>
     
-    <pre class="prettyprint"><code>var view = require('view');
+    <pre class="prettyprint"><code>		var view = require('view');
 
-var list = view({
-	template : '&lt;ul> {{#items}}&lt;li>{{.}}&lt;/li>{{/items}} &lt;/ul>',
+		var list = view({
+			template : '&lt;ul> {{#items}}&lt;li>{{.}}&lt;/li>{{/items}} &lt;/ul>',
 
-	events : {
-		'click li' : 'clickItem'
-	},
+			events : {
+				'click li' : 'clickItem'
+			},
 
-	clickItem : function(e) {
-		console.log(e.delegationTarget.getAttribute('title'));
-	}
-};
+			clickItem : function(e) {
+				console.log(e.delegationTarget.getAttribute('title'));
+			}
+		};
 
-// insert into a parent node:
-list.insertInto(document.body);
+		// insert into a parent node:
+		list.insertInto(document.body);
 
-// template some data:
-list.render({
-	items : [ 'Peach', 'Mango', 'Orange' ]
-});</code></pre>
+		// template some data:
+		list.render({
+			items : [ 'Peach', 'Mango', 'Orange' ]
+		});</code></pre>
 
         
     
@@ -212,7 +212,7 @@ list.render({
         <dl>
             
 <dt>
-    <h4 class="name" id="view"><span class="type-signature">&lt;static> </span>view<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".view"><span class="type-signature">&lt;static> </span>view<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -253,7 +253,7 @@ list.render({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="view.js.html">view.js</a>, <a href="view.js.html#line322">line 322</a>
+        <a href="view.js.html">view.js</a>, <a href="view.js.html#line324">line 324</a>
     </li></ul></dd>
     
     
@@ -296,11 +296,11 @@ list.render({
 	<a class="menuLink">Menu</a>
 
 	<nav>
-		<h2><a href="index.html">Overview</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:view"><a href="module-view.html">view</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.view"><a href="module-view.html#view">view</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:view.View"><a href="module-view.View.html">View</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.View#$"><a href="module-view.View.html#$">$</a></li><li title="module:view.View#$$"><a href="module-view.View.html#$$">$$</a></li><li title="module:view.View#find"><a href="module-view.View.html#find">find</a></li><li title="module:view.View#findOne"><a href="module-view.View.html#findOne">findOne</a></li><li title="module:view.View#hookEvents"><a href="module-view.View.html#hookEvents">hookEvents</a></li><li title="module:view.View#insertAfter"><a href="module-view.View.html#insertAfter">insertAfter</a></li><li title="module:view.View#insertInto"><a href="module-view.View.html#insertInto">insertInto</a></li><li title="module:view.View#render"><a href="module-view.View.html#render">render</a></li><li title="module:view.View#template"><a href="module-view.View.html#template">template</a></li></ul></div></ul>
+		<h2><a href="index.html">Overview</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:view"><a href="module-view.html">view</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.view"><a href="module-view.html#.view">view</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:view.View"><a href="module-view.View.html">View</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:view.View#$"><a href="module-view.View.html#$">$</a></li><li title="module:view.View#$$"><a href="module-view.View.html#$$">$$</a></li><li title="module:view.View#find"><a href="module-view.View.html#find">find</a></li><li title="module:view.View#findOne"><a href="module-view.View.html#findOne">findOne</a></li><li title="module:view.View#hookEvents"><a href="module-view.View.html#hookEvents">hookEvents</a></li><li title="module:view.View#insertAfter"><a href="module-view.View.html#insertAfter">insertAfter</a></li><li title="module:view.View#insertInto"><a href="module-view.View.html#insertInto">insertInto</a></li><li title="module:view.View#render"><a href="module-view.View.html#render">render</a></li><li title="module:view.View#template"><a href="module-view.View.html#template">template</a></li></ul></div></ul>
 	</nav>
 
 	<footer>
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Jan 16 2015 17:35:14 GMT-0500 (EST)
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Mar 07 2016 20:14:46 GMT-0500 (EST)
 	</footer>
 
 	<script src="scripts/prettify/prettify.js"></script>
