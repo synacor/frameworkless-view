@@ -1,13 +1,13 @@
 Frameworkless View [![NPM Version](http://img.shields.io/npm/v/frameworkless-view.svg?style=flat)](https://www.npmjs.org/package/frameworkless-view) [![Bower Version](http://img.shields.io/bower/v/frameworkless-view.svg?style=flat)](http://bower.io/search/?q=frameworkless-view)
 =============
 
-A simple view-presenter module for [frameworkless](http://github.com/synacorinc/frameworkless).
+A simple view-presenter module for [frameworkless](http://github.com/synacor/frameworkless).
 
 **[View Demo](http://frameworkless-view.herokuapp.com/demo/)**
 
-[![Build Status](https://img.shields.io/travis/synacorinc/frameworkless-view.svg?style=flat&branch=master)](https://travis-ci.org/synacorinc/frameworkless-view)
-[![Dependency Status](http://img.shields.io/david/synacorinc/frameworkless-view.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless-view)
-[![devDependency Status](http://img.shields.io/david/dev/synacorinc/frameworkless-view.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless-view#info=devDependencies)
+[![Build Status](https://img.shields.io/travis/synacor/frameworkless-view.svg?style=flat&branch=master)](https://travis-ci.org/synacor/frameworkless-view)
+[![Dependency Status](http://img.shields.io/david/synacor/frameworkless-view.svg?style=flat)](https://david-dm.org/synacor/frameworkless-view)
+[![devDependency Status](http://img.shields.io/david/dev/synacor/frameworkless-view.svg?style=flat)](https://david-dm.org/synacor/frameworkless-view#info=devDependencies)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
@@ -55,7 +55,7 @@ Get started right away, so you can disassemble and play around at your lesure.
 
 ```bash
 # Clone frameworkless-view
-git clone git@github.com:synacorinc/frameworkless-view.git
+git clone git@github.com:synacor/frameworkless-view.git
 
 # Install development dependencies
 npm install
