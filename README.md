@@ -1,6 +1,8 @@
 Frameworkless View [![NPM Version](http://img.shields.io/npm/v/frameworkless-view.svg?style=flat)](https://www.npmjs.org/package/frameworkless-view) [![Bower Version](http://img.shields.io/bower/v/frameworkless-view.svg?style=flat)](http://bower.io/search/?q=frameworkless-view)
 =============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/synacor/frameworkless-view.svg)](https://greenkeeper.io/)
+
 A simple view-presenter module for [frameworkless](http://github.com/synacor/frameworkless).
 
 **[View Demo](http://frameworkless-view.herokuapp.com/demo/)**
